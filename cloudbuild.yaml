@@ -24,7 +24,9 @@ steps:
       '--service-account', 
       'hackaton-sa@squad-a1.iam.gserviceaccount.com',
       '--port',
-      '8080'
+      '8080',
+      '--set-secrets',
+      'SPRING_DATASOURCE_USERNAME=SPRING_DATASOURCE_USERNAME:latest,SPRING_DATASOURCE_PASSWORD=SPRING_DATASOURCE_PASSWORD:latest'
 
 
     ]
