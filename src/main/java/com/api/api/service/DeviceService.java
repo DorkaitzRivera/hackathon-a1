@@ -1,5 +1,6 @@
 package com.api.api.service;
 
+import com.api.api.dto.UpdateDeviceRequest;
 import com.api.api.model.Device;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +58,7 @@ public class DeviceService {
         return devices.removeIf(d -> d.getId().equals(id));
     }
 
-    private Device create(Device device) {
+    public Device create(Device device) {
         device.setId(UUID.randomUUID());
         devices.add(device);
         return device;

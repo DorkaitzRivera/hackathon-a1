@@ -103,7 +103,7 @@ public class DeviceController {
     public ResponseEntity<Device> crearDispositivo(
             @Parameter(description = "Datos del nuevo dispositivo")
             @RequestBody Device device) {
-        Device nuevoDispositivo = deviceService.crear(device);
+        Device nuevoDispositivo = deviceService.create(device);
         return ResponseEntity.status(201).body(nuevoDispositivo);
     }
 }
