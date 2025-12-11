@@ -1,5 +1,6 @@
 package com.api.api.controller;
 
+import com.api.api.dto.UpdateDeviceRequest;
 import com.api.api.model.Device;
 import com.api.api.service.DeviceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,13 +11,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/devices")
+@RequestMapping("/api/v1/devices")
 @CrossOrigin(origins = "*")
 @Tag(name = "Dispositivos", description = "API para gestión del catálogo de dispositivos móviles")
 public class DeviceController {
@@ -47,24 +46,33 @@ public class DeviceController {
     public ResponseEntity<Device> obtenerDispositivo(
             @Parameter(description = "ID del dispositivo")
             @PathVariable UUID id) {
-        return deviceService.obtenerPorId(id)
+        return deviceService.getById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Editar precio de dispositivo",
-               description = "Actualiza el precio de un dispositivo existente")
+    @Operation(summary = "Actualizar dispositivo",
+               description = "Actualiza parcialmente un dispositivo. Solo se actualizarán los campos enviados en el request. Campos soportados: precio, imageUrl.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Precio actualizado exitosamente"),
+        @ApiResponse(responseCode = "200", description = "Dispositivo actualizado exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Request inválido - no hay campos para actualizar"),
         @ApiResponse(responseCode = "404", description = "Dispositivo no encontrado")
     })
-    @PatchMapping("/{id}/precio")
-    public ResponseEntity<Device> editarPrecio(
+    @PatchMapping("/{id}")
+    public ResponseEntity<Device> updateDevice(
             @Parameter(description = "ID del dispositivo")
             @PathVariable UUID id,
-            @Parameter(description = "Nuevo precio del dispositivo")
-            @RequestBody Map<String, BigDecimal> precio) {
-        return deviceService.editarPrecio(id, precio.get("precio"))
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Campos a actualizar. Solo se modificarán los campos presentes en el request."
+            )
+            @RequestBody UpdateDeviceRequest request) {
+
+        // Validar que al menos venga algún campo actualizable
+        if (request.getPrice() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return deviceService.updateDevice(id, request)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -79,7 +87,7 @@ public class DeviceController {
     public ResponseEntity<Void> eliminarDispositivo(
             @Parameter(description = "ID del dispositivo a eliminar")
             @PathVariable UUID id) {
-        if (deviceService.eliminar(id)) {
+        if (deviceService.remove(id)) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
