@@ -1,6 +1,5 @@
 package com.api.api.service;
 
-import com.api.api.dto.UpdateDeviceRequest;
 import com.api.api.model.Device;
 import org.springframework.stereotype.Service;
 
