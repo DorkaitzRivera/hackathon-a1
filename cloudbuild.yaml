@@ -20,7 +20,7 @@ steps:
       '--image', 
       'europe-docker.pkg.dev/squad-a1/reskilling-hackathon-backend/demo-api:$SHORT_SHA',
       '--region', 
-      'europe', 
+      'europe-southwest1', 
       '--service-account', 
       'hackaton-sa@squad-a1.iam.gserviceaccount.com',
       '--port',
@@ -37,3 +37,4 @@ options:
 
 
 
+ 
